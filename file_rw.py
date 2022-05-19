@@ -16,6 +16,15 @@ def write_group_chain(chains, directory, cn):
     file_prefix = cn_dir + cn + "chain"
     write_chain_on_file(chains, file_prefix)
 
+def write_feature_file(headers, features):
+    filename = "feature_file.csv"
+    with open(filename, 'w', encoding="utf-8", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(headers)
+        for row in features:
+            writer.writerow(row.values())
+        f.close()
+
 def write_chain_on_file(chains, file_prefix):
     headers = chains[0][0].keys()
     file_index = 1
