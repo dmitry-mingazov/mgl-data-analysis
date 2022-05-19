@@ -13,6 +13,27 @@ def filter_chains_by_len(chains, threshold, is_less_then):
             filtered_chains.append(chain)
     return filtered_chains
 
+def delete_duplicate_rows(chains):
+    filtered_chains = []
+    for chain in chains:
+        filtered_rows = []
+        prev = chain[0]
+        filtered_rows.append(prev)
+        for row in chain:
+            if row["d"] != prev["d"] or row["sid"] != prev["sid"]:
+                filtered_rows.append(row)
+                prev = row
+        filtered_chains.append(filtered_rows)
+    return filtered_chains
+
+def filter_grouped_chains_smaller_than(grouped_chains, threshold):
+    filtered_grouped_chains = {}
+    for cn in grouped_chains:
+        group = grouped_chains[cn]
+        if len(group) >= threshold:
+            filtered_grouped_chains[cn] = group
+    return filtered_grouped_chains
+
 def get_chain_cn(chain):
     occurences = {}
     max = -1
