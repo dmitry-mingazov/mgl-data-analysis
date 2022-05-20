@@ -47,6 +47,15 @@ def get_chain_cn(chain):
             max_class_name = class_name
     return max_class_name
 
+def group_by_first_class(chains):
+    grouped_chains = {}
+    for chain in chains:
+        cn = chain[0]["cn"]
+        group = grouped_chains.get(cn, [])
+        group.append(chain)
+        grouped_chains[cn] = group
+    return grouped_chains
+
 def group_by_class_name(chains):
     grouped_chains = {}
     for chain in chains:
