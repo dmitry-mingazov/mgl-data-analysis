@@ -61,6 +61,14 @@ def init_new_chain(id1, id2, chains_size, valuable_ids):
         add_id(id2, chains_size, valuable_ids)
     return chains_size
 
+def merge_chains(chains, chain_index_1, chain_index_2, valuable_ids):
+    merged_chain = chains[chain_index_1]
+    for row in chains[chain_index_2]:
+        merged_chain.append(row)
+    chains[chain_index_2] = []
+    for id in valuable_ids:
+        if valuable_ids[id] == chain_index_2:
+            valuable_ids[id] = chain_index_1
 
 def read_chains_from_file(filename, delimiter):
     chains_size = -1
@@ -76,26 +84,35 @@ def read_chains_from_file(filename, delimiter):
                 chains_size = init_new_chain(row["pid"], row["sid"], chains_size, valuable_ids)
                 chains.append([])
             line_count += 1
-            # if pid is present, save the sid and add the row to the relative chain
-            chain_index = valuable_ids.get(row["pid"], -1)
-            if chain_index >= 0:
-                chains[chain_index].append(row)
-                add_id(row["sid"], chain_index, valuable_ids)
-                continue
-            # if sid is present, save the pid and add the row the relative chain
-            chain_index = valuable_ids.get(row["sid"], -1)
-            if chain_index >= 0:
-                chains[chain_index].append(row)
-                add_id(row["pid"], chain_index, valuable_ids)
-                continue
-            # if this code is reached, this row belongs to a new chain
-            chains_size = init_new_chain(row["pid"], row["sid"], chains_size, valuable_ids)
-            chains.append([])
-            chains[chains_size].append(row)
+
+            chain_index_pid = valuable_ids.get(row["pid"], -1)
+            chain_index_sid = valuable_ids.get(row["sid"], -1)
+            if chain_index_pid < 0 or chain_index_sid < 0:
+                if chain_index_pid < 0 and chain_index_sid < 0:
+                    chains_size = init_new_chain(row["pid"], row["sid"], chains_size, valuable_ids)
+                    chains.append([])
+                    chains[chains_size].append(row)
+                elif chain_index_pid >= 0:
+                    chains[chain_index_pid].append(row)
+                    add_id(row["sid"], chain_index_pid, valuable_ids)
+                else:
+                    chains[chain_index_sid].append(row)
+                    add_id(row["pid"], chain_index_sid, valuable_ids)
+            else:
+                if chain_index_pid == chain_index_sid:
+                    chains[chain_index_pid].append(row)
+                else:
+                    chains[chain_index_pid].append(row)
+                    merge_chains(chains, chain_index_pid, chain_index_sid, valuable_ids)
         f.close()
+    not_empty_chains = []
+    for chain in chains:
+        if len(chain) > 0:
+            not_empty_chains.append(chain)
     print(f"Chains found: {len(chains)}")
+    print(f"Not empty chains: {len(not_empty_chains)}")
     print(f"Unique ids found: {len(valuable_ids)}")
-    return chains
+    return not_empty_chains
             
 
 
