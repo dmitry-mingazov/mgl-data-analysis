@@ -13,6 +13,13 @@ def filter_chains_by_len(chains, threshold, is_less_then):
             filtered_chains.append(chain)
     return filtered_chains
 
+def order_chains_by_column(chains, column):
+    filtered_chains = []
+    for chain in chains:
+        ordered = sorted(chain, key=lambda row: row[column])
+        filtered_chains.append(ordered)
+    return filtered_chains
+
 def delete_duplicate_chains_by_cn_ordered(grouped_chains):
     dupes_counter = 0
     filtered_grouped_chains = {}
