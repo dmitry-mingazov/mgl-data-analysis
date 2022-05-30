@@ -13,6 +13,10 @@ def filter_chains_by_len(chains, threshold, is_less_then):
             filtered_chains.append(chain)
     return filtered_chains
 
+def filter_chains_by_group(grouped_chains, group):
+    chains = grouped_chains.get(group, [])
+    return chains
+
 def order_chains_by_column(chains, column):
     filtered_chains = []
     for chain in chains:
@@ -66,7 +70,7 @@ def delete_duplicate_rows(chains):
         filtered_chains.append(filtered_rows)
     return filtered_chains
 
-def filter_grouped_chains_smaller_than(grouped_chains, threshold):
+def filter_grouped_chains_bigger_than(grouped_chains, threshold):
     filtered_grouped_chains = {}
     for cn in grouped_chains:
         group = grouped_chains[cn]
