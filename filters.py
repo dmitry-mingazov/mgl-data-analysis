@@ -13,6 +13,39 @@ def filter_chains_by_len(chains, threshold, is_less_then):
             filtered_chains.append(chain)
     return filtered_chains
 
+def delete_duplicate_chains_by_cn_ordered(grouped_chains):
+    dupes_counter = 0
+    filtered_grouped_chains = {}
+    for cn in grouped_chains:
+        chains_by_size = {}
+        for chain in grouped_chains[cn]:
+            chain_len = len(chain)
+            tmp_array = chains_by_size.get(chain_len, [])
+            tmp_array.append(chain)
+            chains_by_size[chain_len] = tmp_array
+        filtered_chains = []
+        for index in chains_by_size:
+            chains = chains_by_size[index]
+            cn_strings = []
+            for chain in chains:
+                cn_string = ""
+                for row in chain:
+                    cn_string += row["cn"]
+                cn_strings.append(cn_string)
+            seen = set()
+            i = 0
+            for cn_string in cn_strings:
+                chain = chains[i]
+                i += 1
+                if not(cn_string in seen):
+                    seen.add(cn_string)
+                    filtered_chains.append(chain)
+                else:
+                    dupes_counter += 1
+        filtered_grouped_chains[cn] = filtered_chains
+    print(f"Chains removed: {dupes_counter}")
+    return filtered_grouped_chains
+
 def delete_duplicate_rows(chains):
     filtered_chains = []
     for chain in chains:
