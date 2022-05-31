@@ -62,6 +62,13 @@ group_actions = {
     2: (group_by_class_name, [], False),
 }
 
+print_actions = {
+    1: (print_grouped_chain_stats, [], True)
+}
+
+def print_print_actions():
+    print("1) Print group grouped chains stats")
+
 def print_group_actions():
     print("1) Group by first class")
     print("2) Group by predominant class")
@@ -126,7 +133,10 @@ def main():
         elif choice == "o":
             fc = run_action(fc, gc, print_order_actions, order_actions)
         elif choice == "p":
-            print("Work in progress")
+            run_action(fc, gc, print_print_actions, print_actions)
+            print("-----------------------")
+            input("Press ENTER to continue...")
+            # print("Work in progress")
         elif choice == "g":
             gc = run_action(fc, gc, print_group_actions, group_actions)
             print("Do you want to discard groups with less chains than @threshold? (If not, type 0)")
