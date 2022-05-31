@@ -1,5 +1,6 @@
 # from clustering import create_feature_file
 import os
+import env
 from file_rw import read_chains_from_file, write_chains_on_file, write_chains_on_file_from_to, write_group_chain
 from clustering import *
 from filters import *
@@ -97,14 +98,8 @@ def run_action(chains, grouped_chains, print_fn, actions):
     return fn(*args)
 
 def main():
-    input_file = "../logs/100k_raw.csv"
-    output_dir = "../logs/chains/smallerThan3/"
-    reports_dir = "../reports/"
-    delimiter = ","
-    cn = "ProFRMConsProtocollo"
-
-
-    chains = read_chains_from_file(input_file, delimiter)
+    print(f"Reading chains inside {env.INPUT_FILE} ...")
+    chains = read_chains_from_file(env.INPUT_FILE, env.DELIMITER)
     # # print_chain_stats(chains)
     # # filtered_chains = filter_chains_bigger_than(delete_duplicate_rows(chains), 3)
     # fc = delete_duplicate_rows(chains)
