@@ -1,15 +1,10 @@
 # from clustering import create_feature_file
 import os
 import env
-from file_rw import read_chains_from_file, write_chains_on_file, write_chains_on_file_from_to, write_group_chain
+from file_rw import read_chains_from_file, save_chains_as_xes, write_chains_on_file, write_chains_on_file_from_to, write_group_chain
 from clustering import *
 from filters import *
 from print import *
-
-def print_save_on_file_actions():
-    print("1) Save chains as @file_prefix + index, inside @directory")
-    print("2) Save chains as @file_prefix + index from @start to @end inside @directory")
-    print("3) Save chains of @group inside @directory")
 
 def print_action_groups():
     print("f - Filter")
@@ -56,7 +51,8 @@ def get_action_input(print_fn, chains, grouped_chains, max_input):
 save_on_file_actions = {
     1: (write_chains_on_file, [("directory", "string", env.OUTPUT_DIR),("file_prefix", "string", env.FILE_PREFIX)], False),
     2: (write_chains_on_file_from_to, [("directory", "string", env.OUTPUT_DIR),("file_prefix", "string", env.FILE_PREFIX), ("start", "int"), ("end", "int")], False),
-    3: (write_group_chain, [("directory", "string", env.OUTPUT_DIR), ("group", "string")], True)
+    3: (write_group_chain, [("directory", "string", env.OUTPUT_DIR), ("group", "string")], True),
+    4: (save_chains_as_xes,  [("directory", "string", env.OUTPUT_DIR), ("file_prefix", "string", env.FILE_PREFIX)], False)
 }
 
 filter_actions = {
@@ -84,6 +80,12 @@ print_actions = {
     2: (print_stats_first_row, [("column", "string")], False),
     3: (print_stats_last_row, [("column", "string")], False),
 }
+
+def print_save_on_file_actions():
+    print("1) Save chains as csv (@file_prefix + index), inside @directory")
+    print("2) Save chains as csv @file_prefix + index from @start to @end inside @directory")
+    print("3) Save chains as of @group as csv inside @directory")
+    print("4) Save chains as xes (@file_prefix + index), inside @directory")
 
 def print_print_actions():
     print("1) Print group grouped chains stats")

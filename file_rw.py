@@ -1,6 +1,11 @@
 import csv
 import os, errno
 
+import pandas as pd
+from pm4py.objects.log.util import dataframe_utils
+from pm4py.objects.conversion.log import converter as log_converter
+from pm4py.objects.log.exporter.xes import exporter as xes_exporter
+
 def create_dir(directory):
     try:
         os.mkdir(directory)
@@ -119,6 +124,27 @@ def read_chains_from_file(filename, delimiter):
     print(f"Not empty chains: {len(not_empty_chains)}")
     print(f"Unique ids found: {len(valuable_ids)}")
     return not_empty_chains
-            
 
+def convert_chain_to_event_log(chain, index):
+    log = {
+        "case:concept:name": [],
+        "concept:name": [],
+        "time:timestamp": [],
+    }
+    for row in chain:
+        log["case:concept:name"].append(index)
+        log["concept:name"].append(row["cn"])
+        log["time:timestamp"].append(row["ingestionDate"])
+    df = pd.DataFrame.from_dict(log)
+    df = dataframe_utils.convert_timestamp_columns_in_df(df)
+    return log_converter.apply(df)
+            
+def save_chains_as_xes(chains, directory, file_prefix):
+    index = 0
+    for chain in chains:
+        index += 1
+        event_log = convert_chain_to_event_log(chain, index)
+        create_dir(directory)
+        filename = directory + file_prefix + str(index) + ".xes"
+        xes_exporter.apply(event_log, filename)
 
