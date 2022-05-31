@@ -20,3 +20,19 @@ def print_group_cids(chains):
         occurences[cid] = occ
     for cid in occurences:
         print(f"{cid}: {occurences[cid]} chains")
+
+def print_stats_first_row(chains, column):
+    occurences = get_occurences(chains, column, 0)
+    print_occurences_stats(occurences, len(chains))
+
+def print_stats_last_row(chains, column):
+    occurences = get_occurences(chains, column, -1)
+    print_occurences_stats(occurences, len(chains))
+
+def get_occurences(chains, column, index):
+    occurences = {}
+    for chain in chains:
+        value = chain[index][column]
+        occ = occurences.get(value, 0) + 1
+        occurences[value] = occ
+    return occurences

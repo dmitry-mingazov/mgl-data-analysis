@@ -4,7 +4,6 @@ import env
 from file_rw import read_chains_from_file, write_chains_on_file, write_chains_on_file_from_to, write_group_chain
 from clustering import *
 from filters import *
-from stats import *
 from print import *
 
 def print_save_on_file_actions():
@@ -80,11 +79,15 @@ group_actions = {
 }
 
 print_actions = {
-    1: (print_grouped_chain_stats, [], True)
+    1: (print_grouped_chain_stats, [], True),
+    2: (print_stats_first_row, [("column", "string")], False),
+    3: (print_stats_last_row, [("column", "string")], False),
 }
 
 def print_print_actions():
     print("1) Print group grouped chains stats")
+    print("2) Print occurences of distinct @column in first rows of chains")
+    print("3) Print occurences of distinct @column in last rows of chains")
 
 def print_group_actions():
     print("1) Group by first class")
