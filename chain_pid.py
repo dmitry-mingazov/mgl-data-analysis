@@ -70,7 +70,8 @@ order_actions = {
 }
 
 delete_actions = {
-    1: (delete_duplicate_rows, [], False)
+    1: (delete_duplicate_rows, [], False),
+    2: (delete_duplicate_chains_by_cn_ordered, [], False)
 }
 
 group_actions = {
@@ -95,6 +96,7 @@ def print_group_actions():
 
 def print_delete_actions():
     print("1) Delete duplicate rows inside chains")
+    print("2) Delete duplicate chains (by ordered class name)")
 
 def print_order_actions():
     print("1) Order chains by @column")
