@@ -1,20 +1,23 @@
 import csv
 import os, errno
 
+def create_dir(directory):
+    try:
+        os.mkdir(directory)
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+
 def write_group_chains_on_files(grouped_chains, directory):
     for cn in grouped_chains:
         chains = grouped_chains[cn]
         write_group_chain(chains, directory, cn)
 
-def write_group_chain(chains, directory, cn):
+def write_group_chain(grouped_chains, directory, cn):
     cn_dir = directory + "/" + cn + "/"
-    try:
-        os.makedirs(cn_dir)
-    except OSError as e:
-        if e.errno != errno.EEXIST:
-            raise
-    file_prefix = cn_dir + cn + "chain"
-    write_chains_on_file(chains, file_prefix)
+    create_dir(cn_dir)
+    dir = cn_dir + "chain"
+    write_chains_on_file(grouped_chains[cn], dir, "chain")
 
 def write_feature_file(headers, features):
     filename = "feature_file.csv"
@@ -34,18 +37,21 @@ def write_chain_on_file(chain, filename):
             writer.writerow(row.values())
         f.close()
 
-def write_chains_on_file_from_to(chains, file_prefix, start, end):
+def write_chains_on_file_from_to(chains, directory, file_prefix, start, end):
+    print(f"Writing {end-start} chains on file")
     file_index = start
+    create_dir(directory)
     for chain in chains[start:end]:
-        filename = file_prefix + str(file_index) + ".csv"
+        filename = directory + file_prefix + str(file_index) + ".csv"
         file_index += 1
         write_chain_on_file(chain, filename)
 
-def write_chains_on_file(chains, file_prefix):
+def write_chains_on_file(chains, directory, file_prefix):
     file_index = 1
-    print(f"Writing {len(chains)} on file")
+    print(f"Writing {len(chains)} chains on file")
+    create_dir(directory)
     for chain in chains:
-        filename = file_prefix + str(file_index) + ".csv"
+        filename = directory + file_prefix + str(file_index) + ".csv"
         file_index += 1
         write_chain_on_file(chain, filename)
 
