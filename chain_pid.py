@@ -74,6 +74,7 @@ def print_order_actions():
 def print_filter_actions():
     print("1) Filter chains bigger than @threshold")
     print("2) Filter chains smaller than @threshold")
+    print("3) Filter chains inside @group")
 
 def run_action(chains, grouped_chains, print_fn, actions):
     choice = get_action_input(print_fn, chains, grouped_chains, len(actions)+1)
