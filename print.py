@@ -1,3 +1,4 @@
+import re
 
 def print_chain_stats(chains):
     print(f"Size of filtered chains: {len(chains)}")
@@ -36,3 +37,22 @@ def get_occurences(chains, column, index):
         occ = occurences.get(value, 0) + 1
         occurences[value] = occ
     return occurences
+
+def print_chains_linked_by_PR(chains):
+    prs = {}
+    regex = r"(PR_[a-f0-9]+)"
+    for index, chain in enumerate(chains):
+        for row in chain:
+            matches = re.finditer(regex, row["d"])
+            for _,match in enumerate(matches, start=1):
+                pr = match.group()
+                matched_chains = prs.get(pr, set())
+                matched_chains.add(index)
+                prs[pr] = matched_chains
+    for pr in prs:
+        if len(prs[pr]) == 1:
+            continue
+        print("------------------------")
+        print(f"Chains containing {pr}:")
+        for index in prs[pr]:
+            print(f"chain{index+1}")

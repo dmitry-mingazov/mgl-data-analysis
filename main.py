@@ -79,6 +79,7 @@ print_actions = {
     1: (print_grouped_chain_stats, [], True),
     2: (print_stats_first_row, [("column", "string")], False),
     3: (print_stats_last_row, [("column", "string")], False),
+    4: (print_chains_linked_by_PR, [], False),
 }
 
 def print_save_on_file_actions():
@@ -91,6 +92,7 @@ def print_print_actions():
     print("1) Print group grouped chains stats")
     print("2) Print occurences of distinct @column in first rows of chains")
     print("3) Print occurences of distinct @column in last rows of chains")
+    print("4) Print chains linked by same PR")
 
 def print_group_actions():
     print("1) Group by first class")
