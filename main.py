@@ -52,7 +52,8 @@ save_on_file_actions = {
     1: (write_chains_on_file, [("directory", "string", env.OUTPUT_DIR),("file_prefix", "string", env.FILE_PREFIX)], False),
     2: (write_chains_on_file_from_to, [("directory", "string", env.OUTPUT_DIR),("file_prefix", "string", env.FILE_PREFIX), ("start", "int"), ("end", "int")], False),
     3: (write_group_chain, [("directory", "string", env.OUTPUT_DIR), ("group", "string")], True),
-    4: (save_chains_as_xes,  [("directory", "string", env.OUTPUT_DIR), ("file_prefix", "string", env.FILE_PREFIX)], False)
+    4: (save_chains_as_xes,  [("directory", "string", env.OUTPUT_DIR), ("file_prefix", "string", env.FILE_PREFIX)], False),
+    5: (save_chains_as_csv_log,  [("filename", "string")], False)
 }
 
 filter_actions = {
@@ -90,6 +91,7 @@ def print_save_on_file_actions():
     print("2) Save chains as csv @file_prefix + index from @start to @end inside @directory")
     print("3) Save chains as of @group as csv inside @directory")
     print("4) Save chains as xes (@file_prefix + index), inside @directory")
+    print("5) Save chains as csv log on @filename")
 
 def print_print_actions():
     print("1) Print group grouped chains stats")

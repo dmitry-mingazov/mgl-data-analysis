@@ -148,3 +148,18 @@ def save_chains_as_xes(chains, directory, file_prefix):
         filename = directory + file_prefix + str(index) + ".xes"
         xes_exporter.apply(event_log, filename)
 
+def add_id_case_to_chain(chain, id_case):
+    filtered_chain = []
+    for row in chain:
+        row["id_case"] = id_case
+        filtered_chain.append(row)
+    return filtered_chain
+
+def save_chains_as_csv_log(chains, filename):
+    merged_chains = []
+    for index, chain in enumerate(chains):
+        fc = add_id_case_to_chain(chain, index+1)
+        merged_chains += fc
+    write_chain_on_file(merged_chains, filename)
+    
+
