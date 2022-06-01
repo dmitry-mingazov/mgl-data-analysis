@@ -1,7 +1,7 @@
 # from clustering import create_feature_file
 import os
 import env
-from file_rw import read_chains_from_file, save_chains_as_xes, write_chains_on_file, write_chains_on_file_from_to, write_group_chain
+from file_rw import *
 from clustering import *
 from filters import *
 from print import *
@@ -58,7 +58,9 @@ save_on_file_actions = {
 filter_actions = {
     1: (filter_chains_bigger_than, [("threshold", "int")], False),
     2: (filter_chains_smaller_than, [("threshold", "int")], False),
-    3: (filter_chains_by_group, [("group", "string")], True)
+    3: (filter_chains_by_group, [("group", "string")], True),
+    4: (split_chains_by_cid, [], False),
+    5: (filter_chains_with_multiple_cids, [], False)
 }
 
 order_actions = {
@@ -109,6 +111,8 @@ def print_filter_actions():
     print("1) Filter chains bigger than @threshold")
     print("2) Filter chains smaller than @threshold")
     print("3) Filter chains inside @group")
+    print("4) Split chains with multiple cids")
+    print("5) Filter chains with multiple cids")
 
 def run_action(chains, grouped_chains, print_fn, actions):
     choice = get_action_input(print_fn, chains, grouped_chains, len(actions)+1)

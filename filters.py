@@ -107,3 +107,26 @@ def group_by_class_name(chains):
     return grouped_chains
     # for chain in chains:
 
+def split_chains_by_cid(chains):
+    filtered_chains = []
+    for chain in chains:
+        cids = {}
+        for row in chain:
+            cid = row["cid"]
+            cid_chain = cids.get(cid, [])
+            cid_chain.append(row)
+            cids[cid] = cid_chain
+        for cid_chain in cids:
+            filtered_chains.append(cid_chain)
+    return filtered_chains
+
+def filter_chains_with_multiple_cids(chains):
+    filtered_chains = []
+    for chain in chains:
+        cid = chain[0]["cid"]
+        for row in chain:
+            curr_cid = row["cid"]
+            if cid != curr_cid:
+                filtered_chains.append(chain)
+                break
+    return filtered_chains
