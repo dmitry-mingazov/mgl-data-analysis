@@ -1,4 +1,5 @@
 import re
+import sys
 
 def print_chain_stats(chains):
     print(f"Size of filtered chains: {len(chains)}")
@@ -38,9 +39,22 @@ def get_occurences(chains, column, index):
         occurences[value] = occ
     return occurences
 
+def print_chains_linked(chains):
+    regex = r"([A-Z]{2}_[a-f0-9]+)"
+    sys.stdout = open("linked_chains.txt", "w")
+    print_chains_linked_by_regex(chains, regex)
+    sys.stdout.close()
+    sys.stdout = sys.__stdout__
+
 def print_chains_linked_by_PR(chains):
+    print_chains_linked_by_hash_prefix(chains, "PR")
+
+def print_chains_linked_by_hash_prefix(chains, hash_prefix):
+    regex = r"("+re.escape(hash_prefix)+"_[a-f0-9]+)"
+    print_chains_linked_by_regex(chains, regex)
+
+def print_chains_linked_by_regex(chains, regex):
     prs = {}
-    regex = r"(PR_[a-f0-9]+)"
     for index, chain in enumerate(chains):
         for row in chain:
             matches = re.finditer(regex, row["d"])
