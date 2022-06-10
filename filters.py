@@ -1,18 +1,23 @@
 import re
+def filter_chains(chains, filter_fn):
+    return list(filter(filter_fn, chains))
+
+def filter_rows_inside_chains(chains, filter_fn):
+    return list(map(lambda c: filter(c, filter_fn), chains))
 
 def filter_chains_smaller_than(chains, threshold):
-    return filter_chains_by_len(chains, threshold, True)        
+    return filter_chains(chains, lambda c: len(c) < threshold)
 
 def filter_chains_bigger_than(chains, threshold):
-    return filter_chains_by_len(chains, threshold, False)        
+    return filter_chains(chains, lambda c: len(c) > threshold)
 
-def filter_chains_by_len(chains, threshold, is_less_then):
-    filtered_chains = []
-    for chain in chains:
-        len_lesser_threshold = len(chain) < threshold
-        if len_lesser_threshold == is_less_then:
-            filtered_chains.append(chain)
-    return filtered_chains
+# def filter_chains_by_len(chains, threshold, is_less_then):
+#     filtered_chains = []
+#     for chain in chains:
+#         len_lesser_threshold = len(chain) < threshold
+#         if len_lesser_threshold == is_less_then:
+#             filtered_chains.append(chain)
+#     return filtered_chains
 
 def filter_chains_by_group(grouped_chains, group):
     chains = grouped_chains.get(group, [])
@@ -121,17 +126,17 @@ def split_chains_by_cid(chains):
             filtered_chains.append(cid_chain)
     return filtered_chains
 
-def filter_chains_with_multiple_cids(chains):
-    filtered_chains = []
-    for chain in chains:
-        cid = chain[0]["cid"]
-        for row in chain:
-            curr_cid = row["cid"]
-            if cid != curr_cid:
-                filtered_chains.append(chain)
-                break
-    return filtered_chains
+def has_chain_multiple_cids(chain):
+    if not len(chain): 
+        return False
+    first_cid = chain[0]["cid"]
+    for row in chain:
+        if first_cid != row["cid"]:
+            return True
+    return False
 
+def filter_chains_with_multiple_cids(chains):
+    return filter_chains(chains, has_chain_multiple_cids)
 
 def filter_chains_by_cn_blacklist(chains):
     # TODO take blacklist as parameter
