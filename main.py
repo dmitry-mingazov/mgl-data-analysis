@@ -1,4 +1,4 @@
-# from clustering import create_feature_file
+#! /usr/bin/python3
 import os
 import env
 from file_rw import *
