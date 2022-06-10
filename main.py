@@ -6,6 +6,12 @@ from clustering import *
 from filters import *
 from print import *
 
+def clear_screen():
+    if os.name == 'nt':
+        os.system("cls")
+    else:
+        os.system("clear")
+
 def print_action_groups():
     print("f - Filter")
     print("d - Delete")
@@ -41,7 +47,7 @@ def print_current_chains(chains, grouped_chains):
 
 def get_action_input(print_fn, chains, grouped_chains, max_input):
     while True:
-        os.system("cls")
+        clear_screen()
         print_current_chains(chains, grouped_chains)
         print_fn()
         choice = int(input("Choice: "))
