@@ -61,7 +61,12 @@ filter_actions = {
     2: (filter_chains_smaller_than, [("threshold", "int")], False),
     3: (filter_chains_by_group, [("group", "string")], True),
     4: (split_chains_by_cid, [], False),
-    5: (filter_chains_with_multiple_cids, [], False)
+    5: (filter_chains_with_multiple_cids, [], False),
+    6: (filter_chains_by_FRM_in_cn, [], False),
+    # TODO missing blacklist parameter, make possible input by user
+    7: (filter_chains_by_cn_blacklist, [], False),
+    # TODO missing whitelist parameter, make possible input by user
+    8: (filter_chains_by_act_whitelist, [], False),
 }
 
 order_actions = {
@@ -117,6 +122,9 @@ def print_filter_actions():
     print("3) Filter chains inside @group")
     print("4) Split chains with multiple cids")
     print("5) Filter chains with multiple cids")
+    print("6) Filter chains with FRM in class name")
+    print("7) Filter chains by class name blacklist")
+    print("8) Filter chains by act whitelist")
 
 def run_action(chains, grouped_chains, print_fn, actions):
     choice = get_action_input(print_fn, chains, grouped_chains, len(actions)+1)

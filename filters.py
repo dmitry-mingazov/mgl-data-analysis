@@ -1,3 +1,4 @@
+import re
 
 def filter_chains_smaller_than(chains, threshold):
     return filter_chains_by_len(chains, threshold, True)        
@@ -129,4 +130,56 @@ def filter_chains_with_multiple_cids(chains):
             if cid != curr_cid:
                 filtered_chains.append(chain)
                 break
+    return filtered_chains
+
+
+def filter_chains_by_cn_blacklist(chains):
+    # TODO take blacklist as parameter
+    blacklist = ["act", "an1", "ap1", "app", "bsf", "but",
+                 "che", "ctl", "dk", "doc", "dp", "ds", "dr",
+                 "dsg", "ele", "exp", "fel", "krn", "mes", "mnu",
+                 "msg", "nav", "rep", "rpt", "sch", "wap", "wkf",
+                 ]
+    blacklist_dict = {}
+    for key in blacklist:
+        blacklist_dict[key] = False
+    filtered_chains = []
+    for chain in chains:
+        filtered_chain = []
+        for row in chain:
+            cn = row["cn"][:3].lower()
+            if blacklist_dict.get(cn, True):
+                filtered_chain.append(row)
+        filtered_chains.append(filtered_chain)
+    return filtered_chains
+
+def filter_chains_by_act_whitelist(chains):
+    # TODO take whitelist as parameter
+    whitelist = ["COMPONENT_CLOSED"]
+    whitelist_dict = {}
+    for key in whitelist:
+        whitelist_dict[key] = True
+    filtered_chains = []
+    for chain in chains:
+        filtered_chain = []
+        for row in chain:
+            act = row["act"]
+            if whitelist_dict.get(act, False):
+                filtered_chain.append(row)
+        filtered_chains.append(filtered_chain)
+    return filtered_chains
+
+def filter_chains_by_FRM_in_cn(chains):
+    regex = r"^.{3}FRM.*"
+    return filter_chains_by_regex_in_cn(chains, regex)
+
+def filter_chains_by_regex_in_cn(chains, regex):
+    filtered_chains = []
+    for chain in chains:
+        filtered_chain = []
+        for row in chain:
+            cn = row["cn"]
+            if re.match(regex, cn):
+                filtered_chain.append(row)
+        filtered_chains.append(filtered_chain)
     return filtered_chains
