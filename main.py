@@ -5,6 +5,7 @@ from file_rw import *
 from clustering import *
 from filters import *
 from print import *
+from group import *
 
 def clear_screen():
     if os.name == 'nt':
