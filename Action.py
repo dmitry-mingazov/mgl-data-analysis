@@ -11,6 +11,7 @@ class Action:
         self.meta_args = args
         self.chain_type = chain_type
         self.args = []
+        self.edit_chains = True
 
     def run(self, chains):
         if len(self.args) != len(self.meta_args):
@@ -27,6 +28,9 @@ class Action:
     def set_args(self, args):
         self.args = args
 
+    def set_edit_chains(self, value):
+        self.edit_chains = value
+
     def is_grouped(self):
         if self.chain_type == "grouped":
             return True
@@ -39,6 +43,10 @@ class ActionGroup():
         self.actions = actions
         self.desc = desc
         self.input_char = input_char
+
+    def set_edit_chains(self, value):
+        for action in self.actions:
+            action.set_edit_chains(value)
 
 class ActionFactory:
     @staticmethod

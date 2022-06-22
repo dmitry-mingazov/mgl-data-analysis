@@ -79,7 +79,9 @@ def get_print_action_group():
     _actions = __get_print_chain_actions()
     _gactions = __get_print_grouped_chain_actions()
     actions = ActionFactory.create_actions_from_list(_id, _actions, _gactions)
-    return ActionGroup(_id, actions, desc, input_char)
+    action_group = ActionGroup(_id, actions, desc, input_char)
+    action_group.set_edit_chains(False)
+    return action_group
 
 def __get_print_chain_actions():
     return [
