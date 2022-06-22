@@ -90,7 +90,7 @@ def split_chains_by_cid(chains):
             cid_chain = cids.get(cid, [])
             cid_chain.append(row)
             cids[cid] = cid_chain
-        for cid_chain in cids:
+        for cid_chain in cids.values():
             filtered_chains.append(cid_chain)
     return filtered_chains
 
