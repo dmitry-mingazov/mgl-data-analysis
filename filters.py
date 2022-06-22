@@ -1,4 +1,6 @@
 import re
+from Action import ActionFactory, ActionGroup
+
 def filter_chains(chains, filter_fn):
     return list(filter(filter_fn, chains))
 
@@ -148,3 +150,62 @@ def filter_chains_by_regex_in_cn(chains, regex):
                 filtered_chain.append(row)
         filtered_chains.append(filtered_chain)
     return filtered_chains
+
+def get_filter_action_group():
+    _id = "flt"
+    _actions = __get_filter_chain_actions()
+    _gactions = __get_filter_grouped_chain_actions()
+    actions = ActionFactory.create_actions_from_list(_id, _actions, _gactions)
+    desc = "Filter"
+    input_char = "f"
+    return ActionGroup(_id, actions, desc, input_char)
+
+
+# functions which will be callable in the cli
+def __get_filter_chain_actions():
+    return [
+        (
+            filter_chains_bigger_than,
+            [("threshold", "int")],
+            "Filter chains bigger than @threshold"
+        ),
+        (
+            filter_chains_smaller_than,
+            [("threshold", "int")],
+            "Filter chains smaller than @threshold"
+        ),
+        (
+            split_chains_by_cid,
+            [],
+            "Split chains with multiple cids"
+        ),
+        (
+            filter_chains_with_multiple_cids,
+            [],
+            "Filter chains with multiple cids"
+        ),
+        (
+            filter_chains_with_FRM_in_cn,
+            [],
+            "Filter rows with FRM in class name"
+        ),
+        (
+            filter_chains_by_cn_blacklist,
+            [],
+            "Filter rows by class name blacklist"
+        ),
+        (
+            filter_chains_by_act_whitelist,
+            [],
+            "Filter rows by act whitelist"
+        ),
+    ]
+
+def __get_filter_grouped_chain_actions():
+    return [
+        (
+            filter_chains_by_group,
+            [("group", "string")],
+            "Filter chains inside @group"
+        )
+    ]
