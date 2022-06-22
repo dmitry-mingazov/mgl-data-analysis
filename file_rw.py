@@ -21,6 +21,19 @@ def __merge_chains(chains, chain_index_1, chain_index_2, valuable_ids):
         if valuable_ids[id] == chain_index_2:
             valuable_ids[id] = chain_index_1
 
+def __split_chains_by_cid(chains):
+    filtered_chains = []
+    for chain in chains:
+        cids = {}
+        for row in chain:
+            cid = row["cid"]
+            cid_chain = cids.get(cid, [])
+            cid_chain.append(row)
+            cids[cid] = cid_chain
+        for cid_chain in cids.values():
+            filtered_chains.append(cid_chain)
+    return filtered_chains
+
 def read_chains_from_file(filename, delimiter):
     chains_size = -1
     chains = []
@@ -56,12 +69,13 @@ def read_chains_from_file(filename, delimiter):
                     chains[chain_index_pid].append(row)
                     __merge_chains(chains, chain_index_pid, chain_index_sid, valuable_ids)
         f.close()
-    not_empty_chains = []
-    for chain in chains:
-        if len(chain) > 0:
-            not_empty_chains.append(chain)
+
+    # remove empty chains
+    chains = list(filter(lambda c: len(c) > 0, chains))
+    # split chains with multiple cids inside
+    chains = __split_chains_by_cid(chains)
+
     print(f"Chains found: {len(chains)}")
-    print(f"Not empty chains: {len(not_empty_chains)}")
     print(f"Unique ids found: {len(valuable_ids)}")
-    return not_empty_chains
+    return chains
 

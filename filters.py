@@ -25,19 +25,7 @@ def filter_grouped_chains_bigger_than(grouped_chains, threshold):
             filtered_grouped_chains[cn] = group
     return filtered_grouped_chains
 
-def split_chains_by_cid(chains):
-    filtered_chains = []
-    for chain in chains:
-        cids = {}
-        for row in chain:
-            cid = row["cid"]
-            cid_chain = cids.get(cid, [])
-            cid_chain.append(row)
-            cids[cid] = cid_chain
-        for cid_chain in cids.values():
-            filtered_chains.append(cid_chain)
-    return filtered_chains
-
+# deprecated, chains are now split while reading file
 def has_chain_multiple_cids(chain):
     if not len(chain): 
         return False
@@ -125,11 +113,6 @@ def __get_filter_chain_actions():
             filter_chains_smaller_than,
             [("threshold", "int")],
             "Filter chains smaller than @threshold"
-        ),
-        (
-            split_chains_by_cid,
-            [],
-            "Split chains with multiple cids"
         ),
         (
             filter_chains_with_multiple_cids,
