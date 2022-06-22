@@ -17,13 +17,6 @@ def filter_chains_by_group(grouped_chains, group):
     chains = grouped_chains.get(group, [])
     return chains
 
-def order_chains_by_column(chains, column):
-    filtered_chains = []
-    for chain in chains:
-        ordered = sorted(chain, key=lambda row: row[column])
-        filtered_chains.append(ordered)
-    return filtered_chains
-
 def filter_grouped_chains_bigger_than(grouped_chains, threshold):
     filtered_grouped_chains = {}
     for cn in grouped_chains:
