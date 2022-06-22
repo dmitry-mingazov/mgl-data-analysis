@@ -89,6 +89,7 @@ delete_actions = {
 group_actions = {
     1: (group_by_first_class, [], False),
     2: (group_by_class_name, [], False),
+    3: (group_by_cid, [], False),
 }
 
 print_actions = {
@@ -117,6 +118,7 @@ def print_print_actions():
 def print_group_actions():
     print("1) Group by first class")
     print("2) Group by predominant class")
+    print("3) Group by cid")
 
 def print_delete_actions():
     print("1) Delete duplicate rows inside chains")

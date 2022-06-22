@@ -30,3 +30,17 @@ def group_by_class_name(chains):
         grouped_chains[cn] = group
     return grouped_chains
     # for chain in chains:
+
+def group_by_cid(chains):
+    grouped_chains = {}
+    # make sure that chains contain only
+    # one cid (split_chains_by_cid)
+    for chain in chains:
+        if not chain:
+            continue
+        cid = chain[0]["cid"]
+        group = grouped_chains.get(cid, [])
+        group.append(chain)
+        grouped_chains[cid] = group
+    return grouped_chains
+
