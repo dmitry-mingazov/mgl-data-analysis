@@ -24,18 +24,22 @@ class Cli:
     def print_info(self, msg):
         print(msg)
 
+    def __print_dash_line(self):
+        print("---------------------------------------------")
+
     def wait_for_input(self):
+        self.__print_dash_line()
         input("Press Enter to continue . . .")
 
     def __print_header(self):
         self.__clear_screen()
-        print("---------------------------------------------")
+        self.__print_dash_line()
         print(f"Chains: {len(self.chains)}")
         if self.grouped_chains:
             print(f"Grouped chains: {len(self.grouped_chains)}")
         else:
             print("Grouped chains: --- no groups created yet ---")
-        print("---------------------------------------------")
+        self.__print_dash_line()
 
     def select_group(self):
         while True:
@@ -73,6 +77,7 @@ class Cli:
     def input_action_args(self, action):
         self.__print_header()
         self.__print_action(action)
+        self.__print_dash_line()
         args = []
         args_meta = action.meta_args
         for arg_meta in args_meta:
@@ -89,7 +94,7 @@ class Cli:
     def __print_groups(self):
         for group in self.groups:
             print(f"{group.input_char}) {group.desc}")
-        print("----------------------------")
+        self.__print_dash_line()
 
     def __print_action(self, action):
         print(f"{action._id[3:]}) {action.desc}")
@@ -97,7 +102,7 @@ class Cli:
     def __print_actions(self, group):
         for action in group.actions:
             self.__print_action(action)
-        print("----------------------------")
+        self.__print_dash_line()
 
     def __clear_screen(self):
         if os.name == 'nt':
