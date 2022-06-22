@@ -51,7 +51,7 @@ class ActionFactory:
     @staticmethod
     def create_actions_from_list(id_prefix, actions, gactions):
         action_objs = []
-        for index, action in enumerate(actions):
+        for index, action in enumerate(actions, 1):
             _id = id_prefix + str(index)
             action_objs.append(ActionFactory.create_action(_id, action, "chain"))
         actions_len = len(actions)
