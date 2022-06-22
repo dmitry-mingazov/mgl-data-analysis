@@ -5,7 +5,7 @@ def filter_chains(chains, filter_fn):
     return list(filter(filter_fn, chains))
 
 def filter_rows_inside_chains(chains, filter_fn):
-    return list(map(lambda c: filter(c, filter_fn), chains))
+    return list(map(lambda c: filter(filter_fn, c), chains))
 
 def filter_chains_smaller_than(chains, threshold):
     return filter_chains(chains, lambda c: len(c) < threshold)
@@ -80,7 +80,8 @@ def filter_chains_with_FRM_in_cn(chains):
     return filter_chains_by_regex_in_cn(chains, regex)
 
 def filter_chains_by_regex_in_cn(chains, regex):
-    return filter_chains(chains, lambda c: re.match(regex, c["cn"]))
+    return filter_rows_inside_chains(chains, lambda c: re.match(regex, c["cn"]))
+
     filtered_chains = []
     for chain in chains:
         filtered_chain = []
