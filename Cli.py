@@ -2,7 +2,7 @@ import os
 from Action import Action, ActionFactory
 from filters import get_filter_action_group
 
-ESCAPE_CHAR = 'q'
+QUIT_CHAR = 'q'
 RESET_CHAR = 'r'
 
 class Cli:
@@ -41,6 +41,11 @@ class Cli:
             print("Grouped chains: --- no groups created yet ---")
         self.__print_dash_line()
 
+    def __print_bottom_bar(self):
+        print(f"({QUIT_CHAR}) Quit ")
+        print(f"({RESET_CHAR}) Reset chains")
+        self.__print_dash_line()
+
     def select_group(self):
         while True:
             self.__print_header()
@@ -49,7 +54,7 @@ class Cli:
             group = [g for g in self.groups if g.input_char == user_input][:1]
             if group:
                 return group[0]
-            if user_input == ESCAPE_CHAR:
+            if user_input == QUIT_CHAR:
                 return None
 
     def select_action(self, group):
@@ -93,11 +98,12 @@ class Cli:
 
     def __print_groups(self):
         for group in self.groups:
-            print(f"{group.input_char}) {group.desc}")
+            print(f"({group.input_char}) {group.desc}")
         self.__print_dash_line()
+        self.__print_bottom_bar()
 
     def __print_action(self, action):
-        print(f"{action._id[3:]}) {action.desc}")
+        print(f"({action._id[3:]}) {action.desc}")
 
     def __print_actions(self, group):
         for action in group.actions:
