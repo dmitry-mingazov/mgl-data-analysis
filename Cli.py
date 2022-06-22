@@ -5,12 +5,18 @@ from filters import get_filter_action_group
 QUIT_CHAR = 'q'
 RESET_CHAR = 'r'
 
+class QuitProgram(Exception):
+    pass
+class ResetChains(Exception):
+    pass
+
 class Cli:
 
     def __init__(self, groups):
         self.groups = groups
         self.chains = []
         self.grouped_chains = {}
+        self.__clear_screen()
 
     def set_chains(self, chains):
         self.chains = chains
@@ -55,7 +61,9 @@ class Cli:
             if group:
                 return group[0]
             if user_input == QUIT_CHAR:
-                return None
+                raise QuitProgram()
+            if user_input == RESET_CHAR:
+                raise ResetChains()
 
     def select_action(self, group):
         while True:
