@@ -1,205 +1,59 @@
 #! /usr/bin/python3.9
-import os
 import env
-from file_rw import *
-from clustering import *
-from filters import *
-from print import *
-from group import *
 
-def clear_screen():
-    if os.name == 'nt':
-        os.system("cls")
-    else:
-        os.system("clear")
+from file_rw import read_chains_from_file
+from filters import get_filter_action_group
+from delete import get_delete_action_group
+from print import get_print_action_group
+from group import get_group_action_group
+from order import get_order_action_group
+from export import get_export_action_group
 
-def print_action_groups():
-    print("f - Filter")
-    print("d - Delete")
-    print("o - Order")
-    print("p - Print")
-    print("g - Group")
-    print("s - Save on file")
-    print("-----------------------")
-    print("r - Reset chains")
-    print("0 - Exit")
+from Cli import Cli
 
-def get_arg_input(name, type, default_value=None):
-    if default_value:
-        value = input(f"Insert @{name} value ({default_value}): ")
-        if not value:
-            print(value)
-            value = default_value
-    else:
-        value = input(f"Insert @{name} value: ")
-    if type == "int":
-        return int(value)
-    else:
-        return value
-
-def print_current_chains(chains, grouped_chains):
-    print("----------------------")
-    print(f"Current chains: {len(chains)}")
-    if grouped_chains:
-        print(f"Groups: {len(grouped_chains.keys())}")
-    else:
-        print("Groups: -- no groups created yet --")
-    print("----------------------")
-
-def get_action_input(print_fn, chains, grouped_chains, max_input):
-    while True:
-        clear_screen()
-        print_current_chains(chains, grouped_chains)
-        print_fn()
-        choice = int(input("Choice: "))
-        if choice in range(1, max_input):
-            return choice
-
-save_on_file_actions = {
-    1: (write_chains_on_file, [("directory", "string", env.OUTPUT_DIR),("file_prefix", "string", env.FILE_PREFIX)], False),
-    2: (write_chains_on_file_from_to, [("directory", "string", env.OUTPUT_DIR),("file_prefix", "string", env.FILE_PREFIX), ("start", "int"), ("end", "int")], False),
-    3: (write_group_chain, [("directory", "string", env.OUTPUT_DIR), ("group", "string")], True),
-    4: (save_chains_as_xes,  [("directory", "string", env.OUTPUT_DIR), ("file_prefix", "string", env.FILE_PREFIX)], False),
-    5: (save_chains_as_csv_log,  [("filename", "string")], False),
-    6: (create_feature_file, [], False)
-}
-
-filter_actions = {
-    1: (filter_chains_bigger_than, [("threshold", "int")], False),
-    2: (filter_chains_smaller_than, [("threshold", "int")], False),
-    3: (filter_chains_by_group, [("group", "string")], True),
-    4: (split_chains_by_cid, [], False),
-    5: (filter_chains_with_multiple_cids, [], False),
-    6: (filter_chains_with_FRM_in_cn, [], False),
-    # TODO missing blacklist parameter, make possible input by user
-    7: (filter_chains_by_cn_blacklist, [], False),
-    # TODO missing whitelist parameter, make possible input by user
-    8: (filter_chains_by_act_whitelist, [], False),
-}
-
-order_actions = {
-    1: (order_chains_by_column, [("column", "string")], False)
-}
-
-delete_actions = {
-    1: (delete_duplicate_rows, [], False),
-    2: (delete_duplicate_chains_by_cn_ordered, [], False)
-}
-
-group_actions = {
-    1: (group_by_first_class, [], False),
-    2: (group_by_class_name, [], False),
-    3: (group_by_cid, [], False),
-}
-
-print_actions = {
-    1: (print_grouped_chain_stats, [], True),
-    2: (print_stats_first_row, [("column", "string")], False),
-    3: (print_stats_last_row, [("column", "string")], False),
-    4: (print_chains_linked_by_PR, [], False),
-    5: (print_chains_linked, [], False),
-}
-
-def print_save_on_file_actions():
-    print("1) Save chains as csv (@file_prefix + index), inside @directory")
-    print("2) Save chains as csv @file_prefix + index from @start to @end inside @directory")
-    print("3) Save chains as of @group as csv inside @directory")
-    print("4) Save chains as xes (@file_prefix + index), inside @directory")
-    print("5) Save chains as csv log on @filename")
-    print("6) Write feature file")
-
-def print_print_actions():
-    print("1) Print group grouped chains stats")
-    print("2) Print occurences of distinct @column in first rows of chains")
-    print("3) Print occurences of distinct @column in last rows of chains")
-    print("4) Print chains linked by same PR in description")
-    print("5) Print chains linked by hashed value in description")
-
-def print_group_actions():
-    print("1) Group by first class")
-    print("2) Group by predominant class")
-    print("3) Group by cid")
-
-def print_delete_actions():
-    print("1) Delete duplicate rows inside chains")
-    print("2) Delete duplicate chains (by ordered class name)")
-
-def print_order_actions():
-    print("1) Order chains by @column")
-
-def print_filter_actions():
-    print("1) Filter chains bigger than @threshold")
-    print("2) Filter chains smaller than @threshold")
-    print("3) Filter chains inside @group")
-    print("4) Split chains with multiple cids")
-    print("5) Filter chains with multiple cids")
-    print("6) Filter chains with FRM in class name")
-    print("7) Filter chains by class name blacklist")
-    print("8) Filter chains by act whitelist")
-
-def run_action(chains, grouped_chains, print_fn, actions):
-    choice = get_action_input(print_fn, chains, grouped_chains, len(actions)+1)
-    action = actions[choice]
-    fn = action[0]
-    args_meta = action[1]
-    is_grouped_chains = action[2]
-    args = []
-    if is_grouped_chains:
-        if grouped_chains:
-            args.append(grouped_chains)
-        else:
-            print("You can't use this function: no groups created yet")
-            return chains
-    else:
-        args.append(chains)
-
-    for arg_meta in args_meta:
-        name = arg_meta[0]
-        type = arg_meta[1]
-        if len(arg_meta) > 2:
-            default_value = arg_meta[2]
-            arg = get_arg_input(name, type, default_value)
-        else:
-            arg = get_arg_input(name, type)
-        args.append(arg)
-    return fn(*args)
-
-def main():
-    print(f"Reading chains inside {env.INPUT_FILE} ...")
-    chains = read_chains_from_file(env.INPUT_FILE, env.DELIMITER)
-
-    fc = chains
-    gc = {}
-    while True:
-        print_current_chains(fc, gc)
-        print_action_groups()
-        choice = input("Choice: ")
-        if choice == "f":
-            fc = run_action(fc, gc, print_filter_actions, filter_actions)
-        elif choice == "d":
-            fc = run_action(fc, gc, print_delete_actions, delete_actions)
-        elif choice == "o":
-            fc = run_action(fc, gc, print_order_actions, order_actions)
-        elif choice == "p":
-            run_action(fc, gc, print_print_actions, print_actions)
-            print("-----------------------")
-            input("Press ENTER to continue...")
-        elif choice == "g":
-            gc = run_action(fc, gc, print_group_actions, group_actions)
-            print("Do you want to discard groups with less chains than @threshold? (If not, type 0)")
-            threshold = get_arg_input("threshold", "int")
-            if threshold != 0:
-                gc = filter_grouped_chains_bigger_than(gc, threshold)
-        elif choice == "s":
-            run_action(fc, gc, print_save_on_file_actions, save_on_file_actions)
-            print("-----------------------")
-            input("Press ENTER to continue...")
-        elif choice == "r":
-            fc = chains
-            gc = {}
-        elif choice == "0":
-            break
-    return
+def __get_groups():
+    return [
+        get_filter_action_group(),
+        get_delete_action_group(),
+        get_print_action_group(),
+        get_group_action_group(),
+        get_order_action_group(),
+        get_export_action_group()
+    ]
 
 if __name__ == "__main__":
-    main()
+    cli = Cli(__get_groups())
+    cli.print_info(f"Reading chains inside {env.INPUT_FILE} ...")
+    original_chains = read_chains_from_file(env.INPUT_FILE, env.DELIMITER)
+    chains = original_chains
+    cli.set_chains(chains)
+    grouped_chains = {}
+    while True:
+        cli.wait_for_input()
+        group = cli.select_group()
+        if not group:
+            # 'q' inserted
+            break
+
+        action = cli.select_action(group)
+
+        if action.is_grouped() and not grouped_chains:
+            cli.print_error("You must create groups before using this function")
+            continue
+
+        cli.input_action_args(action)
+
+        if action:
+            if action.is_grouped():
+                input_chains = grouped_chains
+            else:
+                input_chains = chains
+            res = action.run(input_chains)
+            if action.edit_chains:
+                if action._id[:3] == "grp":
+                    grouped_chains = res
+                else:
+                    chains = res
+            cli.set_chains(chains)
+            cli.set_grouped_chains(grouped_chains)
+
