@@ -1,4 +1,4 @@
-
+from Action import ActionGroup, ActionFactory
 def get_chain_cn(chain):
     occurences = {}
     max = -1
@@ -44,3 +44,29 @@ def group_by_cid(chains):
         grouped_chains[cid] = group
     return grouped_chains
 
+def get_group_action_group():
+    _id = "grp"
+    desc = "Group"
+    input_char = "g"
+    _actions = __get_group_chain_actions()
+    actions =  ActionFactory.create_actions_from_list(_id, _actions, [])
+    return ActionGroup(_id, actions, desc, input_char)
+
+def __get_group_chain_actions():
+    return [
+        (
+            group_by_first_class,
+            [],
+            "Group by first class"
+        ),
+        (
+            group_by_class_name,
+            [],
+            "Group by predominant class"
+        ),
+        (
+            group_by_cid,
+            [],
+            "Group by cid"
+        ),
+    ]
