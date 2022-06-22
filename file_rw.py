@@ -138,10 +138,13 @@ def convert_chain_to_event_log(chain, index):
     df = pd.DataFrame.from_dict(log)
     df = dataframe_utils.convert_timestamp_columns_in_df(df)
     return log_converter.apply(df)
-            
+
+def filter_not_empty_chains(chains):
+    return list(filter(lambda c: len(c) > 0,chains))
+
 def save_chains_as_xes(chains, directory, file_prefix):
     index = 0
-    for chain in chains:
+    for chain in filter_not_empty_chains(chains):
         index += 1
         event_log = convert_chain_to_event_log(chain, index)
         create_dir(directory)
