@@ -136,11 +136,13 @@ def filter_chains_by_act_whitelist(chains):
         filtered_chains.append(filtered_chain)
     return filtered_chains
 
-def filter_chains_by_FRM_in_cn(chains):
+def filter_chains_with_FRM_in_cn(chains):
+    """ Get all the chains with FRM in class name """
     regex = r"^.{3}FRM.*"
     return filter_chains_by_regex_in_cn(chains, regex)
 
 def filter_chains_by_regex_in_cn(chains, regex):
+    return filter_chains(chains, lambda c: re.match(regex, c["cn"]))
     filtered_chains = []
     for chain in chains:
         filtered_chain = []

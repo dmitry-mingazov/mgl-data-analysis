@@ -70,7 +70,7 @@ filter_actions = {
     3: (filter_chains_by_group, [("group", "string")], True),
     4: (split_chains_by_cid, [], False),
     5: (filter_chains_with_multiple_cids, [], False),
-    6: (filter_chains_by_FRM_in_cn, [], False),
+    6: (filter_chains_with_FRM_in_cn, [], False),
     # TODO missing blacklist parameter, make possible input by user
     7: (filter_chains_by_cn_blacklist, [], False),
     # TODO missing whitelist parameter, make possible input by user
