@@ -55,7 +55,7 @@ class ActionFactory:
             _id = id_prefix + str(index)
             action_objs.append(ActionFactory.create_action(_id, action, "chain"))
         actions_len = len(actions)
-        for index, gaction in enumerate(gactions):
+        for index, gaction in enumerate(gactions, 1):
             _id = id_prefix + str(actions_len + index)
             action_objs.append(ActionFactory.create_action(_id, gaction, "grouped"))
         return action_objs
