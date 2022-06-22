@@ -1,5 +1,6 @@
 import re
 import sys
+from Action import ActionFactory, ActionGroup
 
 def print_chain_stats(chains):
     print(f"Size of filtered chains: {len(chains)}")
@@ -70,3 +71,45 @@ def print_chains_linked_by_regex(chains, regex):
         print(f"Chains containing {pr}:")
         for index in prs[pr]:
             print(f"chain{index+1}")
+
+def get_print_action_group():
+    _id = "prn"
+    desc = "Print"
+    input_char = "p"
+    _actions = __get_print_chain_actions()
+    _gactions = __get_print_grouped_chain_actions()
+    actions = ActionFactory.create_actions_from_list(_id, _actions, _gactions)
+    return ActionGroup(_id, actions, desc, input_char)
+
+def __get_print_chain_actions():
+    return [
+        (
+            print_stats_first_row,
+            [("column", "string")],
+            "Print occurences of distinct @column in first rows of chains"
+        ),
+        (
+            print_stats_last_row,
+            [("column", "string")],
+            "Print occurences of distinct @column in last rows of chains"
+        ),
+        (
+            print_chains_linked_by_PR,
+            [],
+            "Print chains linked by same PR in description"
+        ),
+        (
+            print_chains_linked,
+            [],
+            "Print chains linke by hashed value in description"
+        ),
+    ]
+
+def __get_print_grouped_chain_actions():
+    return [
+        (
+            print_grouped_chain_stats,
+            [],
+            "Print grouped chains stats"
+        ),
+    ]
