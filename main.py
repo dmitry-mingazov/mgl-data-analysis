@@ -9,7 +9,7 @@ from group import get_group_action_group
 from order import get_order_action_group
 from export import get_export_action_group
 
-from Cli import Cli, QuitProgram, ResetChains
+from Cli import Cli, QuitProgram, ResetChains, BackToMenu
 
 def __get_groups():
     return [
@@ -28,8 +28,8 @@ if __name__ == "__main__":
     chains = original_chains
     cli.set_chains(chains)
     grouped_chains = {}
+
     while True:
-        cli.wait_for_input()
 
         try: 
             group = cli.select_group()
@@ -43,10 +43,14 @@ if __name__ == "__main__":
             cli.print_info("Reverted all edits to chains and grouped chains")
             continue
 
-        action = cli.select_action(group)
+        try:
+            action = cli.select_action(group)
+        except BackToMenu:
+            continue
 
         if action.is_grouped() and not grouped_chains:
             cli.print_error("You must create groups before using this function")
+            cli.wait_for_input()
             continue
 
         cli.input_action_args(action)
@@ -64,4 +68,5 @@ if __name__ == "__main__":
                     chains = res
             cli.set_chains(chains)
             cli.set_grouped_chains(grouped_chains)
+        cli.wait_for_input()
 

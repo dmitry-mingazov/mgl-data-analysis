@@ -4,10 +4,19 @@ from filters import get_filter_action_group
 
 QUIT_CHAR = 'q'
 RESET_CHAR = 'r'
+BACK_TO_MENU_CHAR = 'c'
+
+BOTTOM_BAR_ACTIONS = {
+    QUIT_CHAR: "Quit",
+    RESET_CHAR: "Reset chains",
+    BACK_TO_MENU_CHAR: "Cancel",
+}
 
 class QuitProgram(Exception):
     pass
 class ResetChains(Exception):
+    pass
+class BackToMenu(Exception):
     pass
 
 class Cli:
@@ -47,9 +56,9 @@ class Cli:
             print("Grouped chains: --- no groups created yet ---")
         self.__print_dash_line()
 
-    def __print_bottom_bar(self):
-        print(f"({QUIT_CHAR}) Quit ")
-        print(f"({RESET_CHAR}) Reset chains")
+    def __print_bottom_bar(self, action_chars):
+        for a in action_chars:
+            print(f"({a}) {BOTTOM_BAR_ACTIONS[a]}")
         self.__print_dash_line()
 
     def select_group(self):
@@ -74,6 +83,8 @@ class Cli:
             action = [a for a in group.actions if a._id == _id][:1]
             if action:
                 return action[0]
+            if user_input == BACK_TO_MENU_CHAR:
+                raise BackToMenu()
 
     def __get_arg_input(self, name, arg_type, default_value=None):
         if default_value:
@@ -108,7 +119,7 @@ class Cli:
         for group in self.groups:
             print(f"({group.input_char}) {group.desc}")
         self.__print_dash_line()
-        self.__print_bottom_bar()
+        self.__print_bottom_bar([QUIT_CHAR, RESET_CHAR])
 
     def __print_action(self, action):
         print(f"({action._id[3:]}) {action.desc}")
@@ -117,6 +128,7 @@ class Cli:
         for action in group.actions:
             self.__print_action(action)
         self.__print_dash_line()
+        self.__print_bottom_bar([BACK_TO_MENU_CHAR])
 
     def __clear_screen(self):
         if os.name == 'nt':
