@@ -1,4 +1,5 @@
 import csv
+from Chain import ChainFactory
 
 def __add_id(id, chain_index, valuable_ids):
     if (id not in valuable_ids) and id:
@@ -74,6 +75,7 @@ def read_chains_from_file(filename, delimiter):
     chains = list(filter(lambda c: len(c) > 0, chains))
     # split chains with multiple cids inside
     chains = __split_chains_by_cid(chains)
+    chains = ChainFactory.create_chains(chains)
 
     print(f"Chains found: {len(chains)}")
     print(f"Unique ids found: {len(valuable_ids)}")
