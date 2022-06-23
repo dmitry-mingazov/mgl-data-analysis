@@ -10,7 +10,6 @@ from order import get_order_action_group
 from export import get_export_action_group
 
 from Cli import Cli, QuitProgram, ResetChains, BackToMenu
-from Chain import ChainFactory
 
 def __get_groups():
     return [

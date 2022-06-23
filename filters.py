@@ -82,16 +82,6 @@ def filter_chains_with_FRM_in_cn(chains):
 def filter_chains_by_regex_in_cn(chains, regex):
     return filter_rows_inside_chains(chains, lambda c: re.match(regex, c["cn"]))
 
-    filtered_chains = []
-    for chain in chains:
-        filtered_chain = []
-        for row in chain:
-            cn = row["cn"]
-            if re.match(regex, cn):
-                filtered_chain.append(row)
-        filtered_chains.append(filtered_chain)
-    return filtered_chains
-
 def get_filter_action_group():
     _id = "flt"
     _actions = __get_filter_chain_actions()
